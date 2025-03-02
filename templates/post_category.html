@@ -1,0 +1,70 @@
+{% extends "index.html" %}
+
+{% block body %}
+    <h2> Ти зараз у категорії -> {{ name_category }} </h2>
+
+    {% for post in posts %}
+        <div class="post">
+            <h3 style="text-align: center; font-size: 24px;">{{ post['title'] }}</h3>
+            <p style="text-align: center; font-size: 18px;">{{ post['text'] }}</p>
+            <div style="text-align: center;">
+                {% if post['image'] %}
+                    <img src="{{ url_for('static', filename=post['image']) }}" alt="Зображення до посту" style="max-width: 300px; height: auto;">
+                {% else %}
+                    <p>Без зображення</p>
+                {% endif %}
+            </div>
+            <p style="text-align: center;">Дата: {{ post['datatime'] }}</p>
+
+            <form method="POST" action="/post/delete/{{ post['id'] }}/{{ name_category }}">
+                <input type="hidden" name="category_id" value="{{ category_id }}">
+                <button type="submit" class="btn btn-danger">Видалити пост</button>
+            </form>
+        </div>
+    {% endfor %}
+
+    <style>
+        .post {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: block;
+            margin: 10px auto;
+        }
+    </style>
+
+
+    {% include "errors.html" %}
+
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">Додавання посту</h3>
+            <hr>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Заголовок</label>
+                    <input type="text" name="title" id="title" class="form-control" value="{{ request.form['title'] }}">
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Картинка</label>
+                    <input type="file" name="image" id="image" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="post" class="form-label">Текст</label>
+                    <textarea name="post" id="post" class="form-control">{{ request.form['post'] }}</textarea><br>
+                </div>
+                <div class="mb-3">
+                    <input type="submit" class="btn btn-primary btn-lg" value="Відправити">
+                    <input type="hidden" name="category_id" value="{{ category_id }}">
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
